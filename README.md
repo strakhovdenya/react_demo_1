@@ -1,5 +1,38 @@
 # Getting Started with Create React App
 
+Этот проект рефакторирован для лучшей масштабируемости и поддержки современных практик React + MUI.
+
+## Структура проекта
+
+```
+src/
+  assets/         # изображения, svg, иконки
+  components/     # переиспользуемые компоненты (CardDemo и др.)
+  hooks/          # кастомные хуки (useWindowWidth и др.)
+  styles/         # тема MUI, глобальные стили
+  types/          # типы TypeScript для пропсов и данных
+  utils/          # утилиты (formatDate и др.)
+  App.tsx         # основной компонент
+  index.tsx       # точка входа
+```
+
+## Особенности
+- Используется Material UI (MUI) с кастомной темой
+- Компоненты типизированы через TypeScript
+- Пример кастомного хука и утилиты
+- Пример теста для компонента
+- Глобальные стили через CssBaseline
+
+## Рекомендации
+- Для новых компонентов создавайте отдельные папки/файлы в `components/`
+- Типы для пропсов и данных храните в `types/`
+- Общие функции — в `utils/`
+- Все ассеты (svg, картинки) — в `assets/`
+- Для глобальных стилей и темы используйте `styles/`
+- Для повторяющейся логики — кастомные хуки в `hooks/`
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
