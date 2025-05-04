@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Timeline from '../components/Timeline';
 import TimelineEventForm from '../components/Timeline/TimelineEventForm';
 import { TimelineBusyInterval } from '../components/Timeline/Timeline.types';
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ru } from 'date-fns/locale';
+import { format, startOfDay, endOfDay } from 'date-fns';
 import { supabase } from '../supabaseClient';
 
 function intervalsOverlap(a: TimelineBusyInterval, b: TimelineBusyInterval) {
@@ -19,15 +24,22 @@ const TimelinePage: React.FC = () => {
   const [editingEvent, setEditingEvent] = useState<TimelineBusyInterval & { id?: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Загрузка событий из Supabase
+  // Загрузка событий из Supabase для выбранной даты
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+      const startOfSelectedDay = startOfDay(selectedDate).toISOString();
+      const endOfSelectedDay = endOfDay(selectedDate).toISOString();
+
       const { data, error } = await supabase
         .from('schedule')
         .select('*')
+        .gte('start', startOfSelectedDay)
+        .lte('start', endOfSelectedDay)
         .order('start', { ascending: true });
+
       if (!error && data) {
         setEvents(data.map(e => ({
           ...e,
@@ -41,7 +53,7 @@ const TimelinePage: React.FC = () => {
       setLoading(false);
     };
     fetchEvents();
-  }, []);
+  }, [selectedDate]);
 
   const handleAdd = () => {
     setEditingEvent(null);
@@ -65,8 +77,7 @@ const TimelinePage: React.FC = () => {
       return;
     }
     setLoading(true);
-    const today = new Date();
-    const dateStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
     if (isEdit && editingEvent?.id) {
       // Обновление
       const { error: updateError } = await supabase.from('schedule').update({
@@ -95,9 +106,13 @@ const TimelinePage: React.FC = () => {
       }
     }
     // Перезагрузка событий
+    const startOfSelectedDay = startOfDay(selectedDate).toISOString();
+    const endOfSelectedDay = endOfDay(selectedDate).toISOString();
     const { data, error: fetchError } = await supabase
       .from('schedule')
       .select('*')
+      .gte('start', startOfSelectedDay)
+      .lte('start', endOfSelectedDay)
       .order('start', { ascending: true });
     if (data) {
       setEvents(data.map(e => ({
@@ -145,22 +160,34 @@ const TimelinePage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Button variant="contained" color="primary" onClick={handleAdd} sx={{ mb: 2 }}>
-        Добавить событие
-      </Button>
-      <Timeline events={events} onEditEvent={handleEditEvent} />
-      <TimelineEventForm
-        open={modalOpen}
-        event={editingEvent}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSave}
-        onDelete={handleDelete}
-        error={error}
-        loading={loading}
-      />
-      {error && <Box sx={{ color: 'error.main', mt: 2 }}>{error}</Box>}
-    </Box>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
+      <Box sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+          <DatePicker
+            label="Выберите дату"
+            value={selectedDate}
+            onChange={(newValue) => {
+              if (newValue) setSelectedDate(newValue);
+            }}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+          <Button variant="contained" color="primary" onClick={handleAdd}>
+            Добавить событие
+          </Button>
+        </Box>
+        <Timeline events={events} onEditEvent={handleEditEvent} />
+        <TimelineEventForm
+          open={modalOpen}
+          event={editingEvent}
+          onClose={() => setModalOpen(false)}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          error={error}
+          loading={loading}
+        />
+        {error && <Box sx={{ color: 'error.main', mt: 2 }}>{error}</Box>}
+      </Box>
+    </LocalizationProvider>
   );
 };
 
