@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Box, Typography } from '@mui/material';
-import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ru } from 'date-fns/locale';
-import { TimelineBusyInterval } from './Timeline.types';
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Box,
+  Typography,
+} from "@mui/material";
+import { TimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { ru } from "date-fns/locale";
+import { TimelineBusyInterval } from "./Timeline.types";
 
 interface TimelineEventFormProps {
   open: boolean;
@@ -16,36 +25,48 @@ interface TimelineEventFormProps {
 }
 
 function toTimeString(date: Date | null) {
-  if (!date) return '';
-  return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
+  if (!date) return "";
+  return date.toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
 
 function fromTimeString(str: string): Date | null {
   if (!str) return null;
-  const [h, m] = str.split(':');
+  const [h, m] = str.split(":");
   const d = new Date();
   d.setHours(Number(h), Number(m), 0, 0);
   return d;
 }
 
-const TimelineEventForm: React.FC<TimelineEventFormProps> = ({ open, event, onClose, onSave, onDelete, error, loading }) => {
+const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
+  open,
+  event,
+  onClose,
+  onSave,
+  onDelete,
+  error,
+  loading,
+}) => {
   const [form, setForm] = useState<TimelineBusyInterval>({
-    start: '',
-    end: '',
-    title: '',
-    description: ''
+    start: "",
+    end: "",
+    title: "",
+    description: "",
   });
 
   useEffect(() => {
     if (event) setForm(event);
-    else setForm({ start: '', end: '', title: '', description: '' });
+    else setForm({ start: "", end: "", title: "", description: "" });
   }, [event, open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleTimeChange = (field: 'start' | 'end', value: Date | null) => {
+  const handleTimeChange = (field: "start" | "end", value: Date | null) => {
     setForm({ ...form, [field]: toTimeString(value) });
   };
 
@@ -58,26 +79,26 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({ open, event, onCl
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-        <DialogTitle>{event && event.id ? 'Редактировать событие' : 'Добавить событие'}</DialogTitle>
+        <DialogTitle>
+          {event && event.id ? "Редактировать событие" : "Добавить событие"}
+        </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
             <TimePicker
               label="Начало"
               value={fromTimeString(form.start)}
-              onChange={val => handleTimeChange('start', val)}
+              onChange={(val: Date | null) => handleTimeChange("start", val)}
               ampm={false}
               minutesStep={15}
-              format="HH:mm"
-              slotProps={{ textField: { fullWidth: true } }}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
             <TimePicker
               label="Конец"
               value={fromTimeString(form.end)}
-              onChange={val => handleTimeChange('end', val)}
+              onChange={(val: Date | null) => handleTimeChange("end", val)}
               ampm={false}
               minutesStep={15}
-              format="HH:mm"
-              slotProps={{ textField: { fullWidth: true } }}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </Box>
           <Box sx={{ mb: 2 }}>
@@ -113,8 +134,14 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({ open, event, onCl
               Удалить
             </Button>
           )}
-          <Button onClick={onClose} disabled={loading}>Отмена</Button>
-          <Button onClick={handleSave} variant="contained" disabled={!form.start || !form.end || !form.title || loading}>
+          <Button onClick={onClose} disabled={loading}>
+            Отмена
+          </Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            disabled={!form.start || !form.end || !form.title || loading}
+          >
             Сохранить
           </Button>
         </DialogActions>
@@ -123,4 +150,4 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({ open, event, onCl
   );
 };
 
-export default TimelineEventForm; 
+export default TimelineEventForm;
