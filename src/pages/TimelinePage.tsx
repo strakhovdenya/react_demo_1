@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Timeline from "../components/Timeline";
 import { TimelineBusyInterval } from "../components/Timeline/Timeline.types";
-import { Box, Button, TextField, Paper } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ru } from "date-fns/locale";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { supabase } from "../supabaseClient";
-import { styled } from "@mui/material/styles";
 import CalendarPicker from "../components/CalendarPicker";
 import DesktopTimelineEventForm from "../components/Timeline/DesktopTimelineEventForm";
 import MobileTimelineEventForm from "../components/Timeline/MobileTimelineEventForm";
