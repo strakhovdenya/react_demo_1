@@ -13,6 +13,7 @@ import { TimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ru } from "date-fns/locale";
 import { TimelineBusyInterval } from "./Timeline.types";
+import TimelineEventActions from "./TimelineEventActions";
 
 interface DesktopTimelineEventFormProps {
   open: boolean;
@@ -154,31 +155,14 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
             </Typography>
           )}
         </DialogContent>
-        <DialogActions
-          sx={{
-            p: "16px 24px",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          {event && event.id && (
-            <Button onClick={onDelete} color="error" disabled={loading}>
-              Удалить
-            </Button>
-          )}
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Button onClick={onClose} disabled={loading}>
-              Отмена
-            </Button>
-            <Button
-              onClick={handleSave}
-              variant="contained"
-              disabled={!form.start || !form.end || !form.title || loading}
-            >
-              Сохранить
-            </Button>
-          </Box>
-        </DialogActions>
+        <TimelineEventActions
+          isEdit={!!event && !!event.id}
+          loading={loading}
+          onDelete={onDelete}
+          onClose={onClose}
+          onSave={handleSave}
+          isSaveDisabled={!form.start || !form.end || !form.title}
+        />
       </Dialog>
     </LocalizationProvider>
   );

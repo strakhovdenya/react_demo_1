@@ -13,6 +13,7 @@ import { TimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ru } from "date-fns/locale";
 import { TimelineBusyInterval } from "./Timeline.types";
+import TimelineEventActions from "./TimelineEventActions";
 
 interface MobileTimelineEventFormProps {
   open: boolean;
@@ -141,45 +142,15 @@ const MobileTimelineEventForm: React.FC<MobileTimelineEventFormProps> = ({
             </Typography>
           )}
         </DialogContent>
-        <DialogActions
-          sx={{
-            p: "8px 12px",
-            flexDirection: "column-reverse",
-            alignItems: "stretch",
-          }}
-        >
-          {event && event.id && (
-            <Button
-              onClick={onDelete}
-              color="error"
-              disabled={loading}
-              fullWidth
-              sx={{ mb: 1 }}
-            >
-              Удалить
-            </Button>
-          )}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button onClick={onClose} disabled={loading} fullWidth>
-              Отмена
-            </Button>
-            <Button
-              onClick={handleSave}
-              variant="contained"
-              disabled={!form.start || !form.end || !form.title || loading}
-              fullWidth
-            >
-              Сохранить
-            </Button>
-          </Box>
-        </DialogActions>
+        <TimelineEventActions
+          isEdit={!!event && !!event.id}
+          loading={loading}
+          onDelete={onDelete}
+          onClose={onClose}
+          onSave={handleSave}
+          isSaveDisabled={!form.start || !form.end || !form.title}
+          isMobile={true}
+        />
       </Dialog>
     </LocalizationProvider>
   );
