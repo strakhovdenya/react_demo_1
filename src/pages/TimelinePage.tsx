@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Timeline from "../components/Timeline";
-import TimelineEventForm from "../components/Timeline/TimelineEventForm";
 import { TimelineBusyInterval } from "../components/Timeline/Timeline.types";
 import { Box, Button, TextField, Paper } from "@mui/material";
-import {
-  DatePicker,
-  StaticDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ru } from "date-fns/locale";
 import { format, startOfDay, endOfDay } from "date-fns";
@@ -42,16 +37,6 @@ function intervalsOverlap(a: TimelineBusyInterval, b: TimelineBusyInterval) {
     parseInt(b.end.split(":")[0]) * 60 + parseInt(b.end.split(":")[1]);
   return aStart < bEnd && bStart < aEnd;
 }
-
-const CustomPickerPaper = styled(Paper)(({ theme }) => ({
-  background: "#fff",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-  borderRadius: 16,
-  padding: 12,
-  minWidth: 0,
-  width: 320,
-  margin: "0 auto",
-}));
 
 const TimelinePage: React.FC = () => {
   const [events, setEvents] = useState<TimelineBusyInterval[]>([]);
