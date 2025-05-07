@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, useMediaQuery } from "@mui/material";
 import TimelineBackgroundBlock from "./TimelineBackgroundBlock";
 import TimelineSlot from "./TimelineSlot";
 import { getSlotHeight, getIntervalPosition } from "./timelineUtils";
 import { TimelineSlotType, TimelineBusyInterval } from "./Timeline.types";
+import MobileTimeline from "./MobileTimeline";
 
 interface TimelineProps {
   events: TimelineBusyInterval[];
@@ -11,6 +12,8 @@ interface TimelineProps {
 }
 
 const Timeline: React.FC<TimelineProps> = ({ events, onEditEvent }) => {
+  const isMobile = useMediaQuery("(max-width:600px)");
+
   // Создаем массив временных меток с интервалом в 15 минут
   const timeSlots: TimelineSlotType[] = Array.from(
     { length: 24 * 4 },
@@ -28,6 +31,10 @@ const Timeline: React.FC<TimelineProps> = ({ events, onEditEvent }) => {
 
   // Используем события, переданные через пропсы
   const busyIntervals = events;
+
+  if (isMobile) {
+    return <MobileTimeline events={events} onEditEvent={onEditEvent} />;
+  }
 
   // Функция для проверки, находится ли временная метка в занятом интервале
   const isTimeInBusyInterval = (time: string) => {
@@ -93,11 +100,12 @@ const Timeline: React.FC<TimelineProps> = ({ events, onEditEvent }) => {
         elevation={3}
         sx={{
           width: "100%",
-          maxWidth: 800,
-          p: 3,
+          maxWidth: { xs: 340, sm: 800 },
+          p: { xs: 1, sm: 3 },
           position: "relative",
           bgcolor: "background.paper",
           borderRadius: 2,
+          mx: { xs: "auto", sm: 0 },
         }}
       >
         <Box sx={{ position: "relative" }}>
@@ -121,16 +129,24 @@ const Timeline: React.FC<TimelineProps> = ({ events, onEditEvent }) => {
           })}
 
           {/* Временные метки */}
-          {timeSlots.map((slot, index) => (
-            <TimelineSlot
-              key={slot.time}
-              time={slot.time}
-              isHour={slot.isHour}
-              isBusy={isTimeInBusyInterval(slot.time)}
-              isPastBusy={isTimeInPastBusyInterval(slot.time)}
-              height={getSlotHeight(slot)}
-            />
-          ))}
+          {timeSlots.map((slot, index) => {
+            // События, начинающиеся в этот слот
+            const eventsInSlot = busyIntervals.filter(
+              (interval) => interval.start === slot.time
+            );
+            return (
+              <TimelineSlot
+                key={slot.time}
+                time={slot.time}
+                isHour={slot.isHour}
+                isBusy={isTimeInBusyInterval(slot.time)}
+                isPastBusy={isTimeInPastBusyInterval(slot.time)}
+                height={getSlotHeight(slot)}
+                eventsInSlot={eventsInSlot}
+                onEditEvent={onEditEvent}
+              />
+            );
+          })}
         </Box>
       </Paper>
     </Box>

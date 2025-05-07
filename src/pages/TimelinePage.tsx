@@ -14,6 +14,10 @@ import { format, startOfDay, endOfDay } from "date-fns";
 import { supabase } from "../supabaseClient";
 import { styled } from "@mui/material/styles";
 import CalendarPicker from "../components/CalendarPicker";
+import DesktopTimelineEventForm from "../components/Timeline/DesktopTimelineEventForm";
+import MobileTimelineEventForm from "../components/Timeline/MobileTimelineEventForm";
+import { useTheme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
 
 interface ScheduleEvent {
   id: number;
@@ -59,6 +63,8 @@ const TimelinePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [eventDates, setEventDates] = useState<EventDates>({});
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Загрузка всех дат с событиями
   useEffect(() => {
@@ -250,7 +256,16 @@ const TimelinePage: React.FC = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
-      <Box sx={{ p: 2, display: "flex", gap: 2 }}>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          gap: 2,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "stretch", sm: "flex-start" },
+          justifyContent: { xs: "flex-start", sm: "flex-start" },
+        }}
+      >
         <CalendarPicker
           selectedDate={selectedDate}
           onChange={(newValue) => {
@@ -258,8 +273,23 @@ const TimelinePage: React.FC = () => {
           }}
           eventDates={eventDates}
         />
-        <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: "flex", gap: 2, mb: 2, alignItems: "center" }}>
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: { xs: 0, sm: 400 },
+            maxWidth: { xs: "100%", sm: 900 },
+            mt: { xs: 2, sm: 0 },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              mb: 2,
+              alignItems: "center",
+              flexDirection: { xs: "column", sm: "row" },
+            }}
+          >
             <DatePicker
               label="Выберите дату"
               value={selectedDate}
@@ -268,20 +298,37 @@ const TimelinePage: React.FC = () => {
               }}
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
-            <Button variant="contained" color="primary" onClick={handleAdd}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAdd}
+              sx={{ width: { xs: "100%", sm: "auto" }, mt: { xs: 1, sm: 0 } }}
+            >
               Добавить событие
             </Button>
           </Box>
           <Timeline events={events} onEditEvent={handleEditEvent} />
-          <TimelineEventForm
-            open={modalOpen}
-            event={editingEvent}
-            onClose={() => setModalOpen(false)}
-            onSave={handleSave}
-            onDelete={handleDelete}
-            error={error}
-            loading={loading}
-          />
+          {isMobile ? (
+            <MobileTimelineEventForm
+              open={modalOpen}
+              event={editingEvent}
+              onClose={() => setModalOpen(false)}
+              onSave={handleSave}
+              onDelete={handleDelete}
+              error={error}
+              loading={loading}
+            />
+          ) : (
+            <DesktopTimelineEventForm
+              open={modalOpen}
+              event={editingEvent}
+              onClose={() => setModalOpen(false)}
+              onSave={handleSave}
+              onDelete={handleDelete}
+              error={error}
+              loading={loading}
+            />
+          )}
           {error && <Box sx={{ color: "error.main", mt: 2 }}>{error}</Box>}
         </Box>
       </Box>

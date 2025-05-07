@@ -8,15 +8,13 @@ import {
   TextField,
   Box,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { TimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ru } from "date-fns/locale";
 import { TimelineBusyInterval } from "./Timeline.types";
 
-interface TimelineEventFormProps {
+interface DesktopTimelineEventFormProps {
   open: boolean;
   event: TimelineBusyInterval | null;
   onClose: () => void;
@@ -43,7 +41,7 @@ function fromTimeString(str: string): Date | null {
   return d;
 }
 
-const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
+const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
   open,
   event,
   onClose,
@@ -52,8 +50,6 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
   error,
   loading,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [form, setForm] = useState<TimelineBusyInterval>({
     start: "",
     end: "",
@@ -83,16 +79,15 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ textAlign: "center", pb: isMobile ? 1 : 2 }}>
+        <DialogTitle sx={{ textAlign: "center", pb: 2 }}>
           {event && event.id ? "Редактировать событие" : "Добавить событие"}
         </DialogTitle>
-        <DialogContent sx={{ p: isMobile ? 1.5 : 2.5 }}>
+        <DialogContent sx={{ p: 2.5 }}>
           <Box
             sx={{
               display: "flex",
-              gap: isMobile ? 1.5 : 2,
-              mb: isMobile ? 1.5 : 2,
-              flexDirection: isMobile ? "column" : "row",
+              gap: 2,
+              mb: 2,
             }}
           >
             <TimePicker
@@ -105,7 +100,11 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
                 <TextField
                   {...params}
                   fullWidth
-                  margin={isMobile ? "dense" : "none"}
+                  InputLabelProps={{
+                    shrink: true,
+                    sx: { color: "#222", fontSize: 15, fontWeight: 500 },
+                  }}
+                  margin="normal"
                 />
               )}
             />
@@ -119,12 +118,16 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
                 <TextField
                   {...params}
                   fullWidth
-                  margin={isMobile ? "dense" : "none"}
+                  InputLabelProps={{
+                    shrink: true,
+                    sx: { color: "#222", fontSize: 15, fontWeight: 500 },
+                  }}
+                  margin="normal"
                 />
               )}
             />
           </Box>
-          <Box sx={{ mb: isMobile ? 1.5 : 2 }}>
+          <Box sx={{ mb: 2 }}>
             <TextField
               label="Название"
               name="title"
@@ -132,7 +135,6 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
               onChange={handleChange}
               fullWidth
               required
-              margin={isMobile ? "dense" : "none"}
             />
           </Box>
           <Box>
@@ -144,52 +146,34 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
               fullWidth
               multiline
               minRows={2}
-              margin={isMobile ? "dense" : "none"}
             />
           </Box>
           {error && (
-            <Typography
-              color="error"
-              sx={{ mt: isMobile ? 1.5 : 2, textAlign: "center" }}
-            >
+            <Typography color="error" sx={{ mt: 2, textAlign: "center" }}>
               {error}
             </Typography>
           )}
         </DialogContent>
         <DialogActions
           sx={{
-            p: isMobile ? "8px 12px" : "16px 24px",
-            flexDirection: isMobile ? "column-reverse" : "row",
-            alignItems: isMobile ? "stretch" : "center",
+            p: "16px 24px",
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
           {event && event.id && (
-            <Button
-              onClick={onDelete}
-              color="error"
-              disabled={loading}
-              fullWidth={isMobile}
-              sx={{ mb: isMobile ? 1 : 0, mr: isMobile ? 0 : "auto" }}
-            >
+            <Button onClick={onDelete} color="error" disabled={loading}>
               Удалить
             </Button>
           )}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              width: isMobile ? "100%" : "auto",
-              justifyContent: isMobile ? "space-between" : "flex-end",
-            }}
-          >
-            <Button onClick={onClose} disabled={loading} fullWidth={isMobile}>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button onClick={onClose} disabled={loading}>
               Отмена
             </Button>
             <Button
               onClick={handleSave}
               variant="contained"
               disabled={!form.start || !form.end || !form.title || loading}
-              fullWidth={isMobile}
             >
               Сохранить
             </Button>
@@ -200,4 +184,4 @@ const TimelineEventForm: React.FC<TimelineEventFormProps> = ({
   );
 };
 
-export default TimelineEventForm;
+export default DesktopTimelineEventForm;
