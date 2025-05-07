@@ -13,6 +13,7 @@ import { ru } from "date-fns/locale";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { supabase } from "../supabaseClient";
 import { styled } from "@mui/material/styles";
+import CalendarPicker from "../components/CalendarPicker";
 
 interface ScheduleEvent {
   id: number;
@@ -250,33 +251,13 @@ const TimelinePage: React.FC = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <Box sx={{ p: 2, display: "flex", gap: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            minWidth: 0,
-            width: "100%",
-            maxWidth: 340,
-            margin: "32px 0 0 0",
+        <CalendarPicker
+          selectedDate={selectedDate}
+          onChange={(newValue) => {
+            if (newValue) setSelectedDate(newValue);
           }}
-        >
-          <StaticDatePicker
-            value={selectedDate}
-            onChange={(newValue: Date | null) => {
-              if (newValue) setSelectedDate(newValue);
-            }}
-            renderInput={(params: any) => <TextField {...params} />}
-            shouldDisableDate={(date: Date) => {
-              const dateStr = format(date, "yyyy-MM-dd");
-              return !eventDates[dateStr];
-            }}
-            components={{
-              PaperContent: CustomPickerPaper,
-            }}
-          />
-        </Box>
+          eventDates={eventDates}
+        />
         <Box sx={{ flex: 1 }}>
           <Box sx={{ display: "flex", gap: 2, mb: 2, alignItems: "center" }}>
             <DatePicker
