@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,13 +7,16 @@ import {
   TextField,
   Box,
   Typography,
-} from "@mui/material";
-import { TimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { ru } from "date-fns/locale";
-import { TimelineBusyInterval } from "./Timeline.types";
-import TimelineEventActions from "./TimelineEventActions";
+} from '@mui/material';
+import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ru } from 'date-fns/locale';
+import { TimelineBusyInterval } from './Timeline.types';
+import TimelineEventActions from './TimelineEventActions';
 
+/**
+ * @description Форма для добавления и редактирования событий в Timeline
+ */
 interface DesktopTimelineEventFormProps {
   open: boolean;
   event: TimelineBusyInterval | null;
@@ -25,17 +28,17 @@ interface DesktopTimelineEventFormProps {
 }
 
 function toTimeString(date: Date | null) {
-  if (!date) return "";
-  return date.toLocaleTimeString("ru-RU", {
-    hour: "2-digit",
-    minute: "2-digit",
+  if (!date) return '';
+  return date.toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
     hour12: false,
   });
 }
 
 function fromTimeString(str: string): Date | null {
   if (!str) return null;
-  const [h, m] = str.split(":");
+  const [h, m] = str.split(':');
   const d = new Date();
   d.setHours(Number(h), Number(m), 0, 0);
   return d;
@@ -51,22 +54,22 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
   loading,
 }) => {
   const [form, setForm] = useState<TimelineBusyInterval>({
-    start: "",
-    end: "",
-    title: "",
-    description: "",
+    start: '',
+    end: '',
+    title: '',
+    description: '',
   });
 
   useEffect(() => {
     if (event) setForm(event);
-    else setForm({ start: "", end: "", title: "", description: "" });
+    else setForm({ start: '', end: '', title: '', description: '' });
   }, [event, open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleTimeChange = (field: "start" | "end", value: Date | null) => {
+  const handleTimeChange = (field: 'start' | 'end', value: Date | null) => {
     setForm({ ...form, [field]: toTimeString(value) });
   };
 
@@ -79,13 +82,13 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ textAlign: "center", pb: 2 }}>
-          {event && event.id ? "Редактировать событие" : "Добавить событие"}
+        <DialogTitle sx={{ textAlign: 'center', pb: 2 }}>
+          {event && event.id ? 'Редактировать событие' : 'Добавить событие'}
         </DialogTitle>
         <DialogContent sx={{ p: 2.5 }}>
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 2,
               mb: 2,
             }}
@@ -93,7 +96,7 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
             <TimePicker
               label="Начало"
               value={fromTimeString(form.start)}
-              onChange={(val: Date | null) => handleTimeChange("start", val)}
+              onChange={(val: Date | null) => handleTimeChange('start', val)}
               ampm={false}
               minutesStep={15}
               renderInput={(params) => (
@@ -102,7 +105,7 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
-                    sx: { color: "#222", fontSize: 15, fontWeight: 500 },
+                    sx: { color: '#222', fontSize: 15, fontWeight: 500 },
                   }}
                   margin="normal"
                 />
@@ -111,7 +114,7 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
             <TimePicker
               label="Конец"
               value={fromTimeString(form.end)}
-              onChange={(val: Date | null) => handleTimeChange("end", val)}
+              onChange={(val: Date | null) => handleTimeChange('end', val)}
               ampm={false}
               minutesStep={15}
               renderInput={(params) => (
@@ -120,7 +123,7 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
-                    sx: { color: "#222", fontSize: 15, fontWeight: 500 },
+                    sx: { color: '#222', fontSize: 15, fontWeight: 500 },
                   }}
                   margin="normal"
                 />
@@ -149,7 +152,7 @@ const DesktopTimelineEventForm: React.FC<DesktopTimelineEventFormProps> = ({
             />
           </Box>
           {error && (
-            <Typography color="error" sx={{ mt: 2, textAlign: "center" }}>
+            <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
               {error}
             </Typography>
           )}
