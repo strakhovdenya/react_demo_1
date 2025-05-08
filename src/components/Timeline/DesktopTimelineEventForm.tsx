@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  TextField,
-  Box,
-  Typography,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, TextField, Box, Typography } from '@mui/material';
 import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ru } from 'date-fns/locale';
@@ -15,7 +7,7 @@ import { TimelineBusyInterval } from './Timeline.types';
 import TimelineEventActions from './TimelineEventActions';
 
 /**
- * @description Форма для добавления и редактирования событий в Timeline
+ * @description Форма для добавления и редактирования событий в Timeline111
  */
 interface DesktopTimelineEventFormProps {
   open: boolean;
