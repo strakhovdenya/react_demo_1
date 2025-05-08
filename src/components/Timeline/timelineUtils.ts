@@ -1,10 +1,11 @@
-export const getSlotHeight = (slot: { isHour: boolean }) => slot.isHour ? 40 : 20;
+export const getSlotHeight = (slot: { isHour: boolean }) => (slot.isHour ? 40 : 20);
 
 export const getIntervalPosition = (
   timeSlots: { time: string; isHour: boolean }[],
   start: string,
   end: string
 ) => {
+  //тест
   let top = 0;
   let height = 0;
   let found = false;
@@ -31,4 +32,4 @@ export const getIntervalPosition = (
   top += startSlotHeight / 2;
   height = height - startSlotHeight / 2 - endSlotHeight / 2;
   return { top, height };
-}; 
+};
