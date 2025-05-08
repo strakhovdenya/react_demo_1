@@ -5,7 +5,7 @@ export const getIntervalPosition = (
   start: string,
   end: string
 ) => {
-  //тест
+  //тест7878
   let top = 0;
   let height = 0;
   let found = false;
